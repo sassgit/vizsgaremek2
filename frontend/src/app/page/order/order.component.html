@@ -1,0 +1,226 @@
+<h2>Rendelések</h2>
+<button class="btn btn-primary" (click)="createOrderClick()" >Új rendelés felvitele az adatbázisba</button>
+<ngx-data-table *ngIf="list$ |async as list" [list]="list" [columns]="[
+    {
+      title: 'Vevő',
+      key: 'customer',
+      interpreter: customerInterpreterMode
+    },
+    {
+      title: 'db',
+      key: 'paintings',
+      interpreter: paintingInterpreterMode
+    },
+    {
+      title: 'Megjegyzés',
+      key: 'remark'
+    },
+    {
+      title: 'Állapot',
+      key: 'status'
+    },
+    {
+      title: 'Számla',
+      key: 'bill'
+    },
+    {
+      title: 'Számla állapt',
+      key: 'billStatus'
+    },
+    {
+      title: 'Végösszeg',
+      key: 'price'
+    },
+    {
+      title: 'Műveletek',
+      key: '',
+      divButton: [
+      {
+        id: 'edit',
+        class: 'btn btn-primary',
+        text: 'Szerkesztés'
+      },
+      {
+        id: 'delete',
+        class: 'btn btn-danger',
+        text: 'Törlés'
+      }
+      ]
+    }
+  ]" [interpreter]="interpreterBound" (onButtonClick)="tableButtonClick($event)"></ngx-data-table>
+
+<app-modal *ngIf="editObj as order" [(visible)]="editVisible" (onOkButtonClick)="editOkButton(order)">
+  <form>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label>Vevő</label>
+      </div>
+      <div class="d-flex justify-content-start">
+        <input disabled type="text" [value]="getCustomerName(order)" name="customer" id="customer" class="form-control">
+        <button class="btn btn-primary" (click)="changeCustomer(order)">Kiválasztás</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label>Képek</label>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Festő</th>
+              <th>Cím</th>
+              <th>típus</th>
+              <th>
+                <button class="btn btn-primary w-80" (click)="selectPainting(order)">Új kép</button>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let item of order.paintings">
+            <td>{{$any(item)?.artist?.artistName}}</td>
+            <td>{{$any(item)?.title}}</td>
+            <td>{{$any(item)?.type}}</td>
+            <td>
+              <div>
+                <button class="btn btn-danger w-80" (click)="deletePainting(order, item)">Törlés</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="remark">Megjegyzés</label>
+      </div>
+      <input type="text" [(ngModel)]="order.remark" name="remark" id="remark" class="form-control">
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="status">Állapot</label>
+      </div>
+      <input type="text" [(ngModel)]="order.status" name="status" id="status" class="form-control">
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="bill">Számla azonosító</label>
+      </div>
+      <input type="text" [(ngModel)]="order.bill" name="bill" id="bill" class="form-control">
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="billStatus">Számla állapot</label>
+      </div>
+      <input type="text" [(ngModel)]="order.billStatus" name="billStatus" id="billStatus" class="form-control">
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="price">Végösszeg</label>
+      </div>
+      <input type="number" step="1000" [(ngModel)]="order.price" name="price" id="price" class="form-control">
+    </div>
+
+    <app-modal
+      [(visible)]="customerSelectVisible"
+      okButtonClass="hidden"
+      [zIndex] = "11000"
+    >
+      <ngx-data-table
+        *ngIf="customerList$ |async as list"
+        [list]="list"
+        [columns]="[
+          {
+            title: 'Név',
+            key: 'fullName'
+          },
+          {
+            title: 'Irányítószám',
+            key: 'zip'
+          },
+          {
+            title: 'Város',
+            key: 'city'
+          },
+          {
+            title: 'Utca, hsz.',
+            key: 'streetAddress'
+          },
+          {
+            title: 'Ország',
+            key: 'country'
+          },
+          {
+            title: 'e-mail',
+            key: 'email'
+          },
+        ]"
+        (onRowClick)="customerSelect($event)"
+      ></ngx-data-table>
+    </app-modal>
+
+    <app-modal
+      [(visible)]="paintingSelectVisible"
+      okButtonClass="hidden"
+      innerWidth="75%"
+      [zIndex] = "11000"
+    >
+      <ngx-data-table *ngIf="paintingList$ |async as list" [list]="list" [columns]="[
+    {
+      title: 'Művész',
+      key: 'artist',
+      interpreter: artistInterpreterMode
+    },
+    {
+      title: 'Cím',
+      key: 'title'
+    },
+    {
+      title: 'Típus',
+      key: 'type'
+    },
+    {
+      title: 'Egyéb',
+      key: 'otherInfo'
+    },
+    {
+      title: 'fotók',
+      key: 'photos',
+      interpreter: photoInterpreterMode
+    },
+    {
+      title: 'Készült (db)',
+      key: 'count'
+    },
+    {
+      title: 'Raktáron (db)',
+      key: 'count'
+    },
+    {
+      title: 'Ár',
+      key: 'price'
+    },
+    ]"
+    [interpreter]="interpreterBound"
+    (onRowClick)="paintingSelect($event)"
+    ></ngx-data-table>
+  </app-modal>
+
+  </form>
+</app-modal>
+
+
+<app-modal
+  [(visible)]="deleteConfirmVisible"
+  okButtonClass="btn btn-danger"
+  (onOkButtonClick)="deleteConfirmed(deleteObj)"
+  okButtonText="Törlés!"
+  [zIndex] = "12000"
+  innerWidth="50%"
+>
+<h2>Törlés megerősítése</h2>
+<hr>
+<h3>
+  Valóban törölni kívánja ezt a megrendelést?
+</h3>
+<small>(Vevő: {{$any(deleteObj.customer).fullName}}, Végösszeg: {{deleteObj.price}} )</small>
+</app-modal>

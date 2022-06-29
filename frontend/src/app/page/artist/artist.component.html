@@ -1,0 +1,76 @@
+<h2>Művészek</h2>
+<button class="btn btn-primary" (click)="createClick()" >Új Művész felvitele az adatbázisba</button>
+<ngx-data-table
+  *ngIf="list$ |async as list"
+  [list]="list"
+  [columns]="[
+    {
+      title: 'Név',
+      key: 'fullName'
+    },
+    {
+      title: 'Művésznév',
+      key: 'artistName'
+    },
+    {
+      title: 'Egyéb információk',
+      key: 'otherInfo'
+    },
+    {
+      title: 'Műveletek',
+      key: '',
+      divButton: [
+      {
+        id: 'edit',
+        class: 'btn btn-primary',
+        text: 'Szerkesztés'
+      },
+      {
+        id: 'delete',
+        class: 'btn btn-danger',
+        text: 'Törlés'
+      }
+      ]
+    }
+  ]"
+  (onButtonClick)="tableButtonClick($event)"
+></ngx-data-table>
+<app-modal *ngIf="editObj as artist" [(visible)]="editVisible" (onOkButtonClick)="editOkButton(artist)" >
+  <form >
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="fullName" >Polgári név</label>
+      </div>
+      <input type="text" [(ngModel)]="artist.fullName" name="fullName" id="fullName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="artistName" >Művésznév</label>
+      </div>
+      <input type="text" [(ngModel)]="artist.artistName" name="artistName" id="artistName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="otherInfo" >Egyéb információk</label>
+      </div>
+      <input type="text" [(ngModel)]="artist.otherInfo" name="otherInfo" id="otherInfo" class="form-control" >
+    </div>
+  </form>
+</app-modal>
+
+
+<app-modal
+  [(visible)]="deleteConfirmVisible"
+  okButtonClass="btn btn-danger"
+  (onOkButtonClick)="deleteConfirmed(deleteObj)"
+  okButtonText="Törlés!"
+  [zIndex] = "12000"
+  innerWidth="50%"
+>
+<h2>Törlés megerősítése</h2>
+<hr>
+<h3>
+  Valóban törölni kívánja a művészt az adatbázisból?
+</h3>
+<small>(Név: {{deleteObj.fullName}} )</small>
+</app-modal>

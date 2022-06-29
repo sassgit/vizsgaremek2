@@ -1,0 +1,33 @@
+<h1>Összesítés</h1>
+
+<ngx-data-table
+  *ngIf="summary$ |async as list"
+  [list]="list"
+  [columns]="[
+    {
+      title: 'Összes festmények darabszáma',
+      key: 'allPaintings'
+    },
+    {
+      title: 'Raktáron lévő festmények darabszáma',
+      key: 'stockPaintings'
+    },
+    {
+      title: 'Összes festmények ára',
+      key: 'allPaintingsPrice'
+    },
+    {
+      title: 'Raktáron lévő festmények ára',
+      key: 'stockPaintingsPrice'
+    },
+    {
+      title: 'Eladott festmények száma',
+      key: 'soldPaintings'
+    },
+    {
+      title: 'Eladott festmények értéke',
+      key: 'soldPrice'
+    },
+  ]"
+></ngx-data-table>
+

@@ -1,0 +1,107 @@
+<h2>Vevők</h2>
+<button class="btn btn-primary" (click)="createClick()" >Új vevő felvitele az adatbázisba</button>
+<ngx-data-table
+  *ngIf="list$ |async as list"
+  [list]="list"
+  [columns]="[
+    {
+      title: 'Név',
+      key: 'fullName'
+    },
+    {
+      title: 'Irányítószám',
+      key: 'zip'
+    },
+    {
+      title: 'Város',
+      key: 'city'
+    },
+    {
+      title: 'Utca, hsz.',
+      key: 'streetAddress'
+    },
+    {
+      title: 'Ország',
+      key: 'country'
+    },
+    {
+      title: 'e-mail',
+      key: 'email'
+    },
+    {
+      title: 'Műveletek',
+      key: '',
+      divButton: [
+      {
+        id: 'edit',
+        class: 'btn btn-primary',
+        text: 'Szerkesztés'
+      },
+      {
+        id: 'delete',
+        class: 'btn btn-danger',
+        text: 'Törlés'
+      }
+      ]
+    }
+  ]"
+  (onButtonClick)="tableButtonClick($event)"
+></ngx-data-table>
+
+<app-modal *ngIf="editObj as customer" [(visible)]="editVisible" (onOkButtonClick)="editOkButton(customer)" >
+  <form >
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="fullName" >Név</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.fullName" name="fullName" id="fullName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="zip" >Irányítószám</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.zip" name="zip" id="customerName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="city" >Város</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.city" name="city" id="customerName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="streetAddress" >Utca, hsz.</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.streetAddress" name="streetAddress" id="customerName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="country" >Ország</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.country" name="country" id="country" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="email" >Email</label>
+      </div>
+      <input type="text" [(ngModel)]="customer.email" name="email" id="email" class="form-control" >
+    </div>
+  </form>
+</app-modal>
+
+
+<app-modal
+  [(visible)]="deleteConfirmVisible"
+  okButtonClass="btn btn-danger"
+  (onOkButtonClick)="deleteConfirmed(deleteObj)"
+  okButtonText="Törlés!"
+  [zIndex] = "12000"
+  innerWidth="50%"
+>
+<h2>Törlés megerősítése</h2>
+<hr>
+<h3>
+  Valóban törölni kívánja a vevőt az adatbázisból?
+</h3>
+<small>(Név: {{deleteObj.fullName}} )</small>
+</app-modal>

@@ -1,0 +1,14 @@
+<div class="modal" [ngClass]="{'modal-hidden': !visible, 'modal-visible': visible}" [style.zIndex]="zIndex">
+  <div class="modal-inner" [style.width]="innerWidth" >
+    <div class="content">
+      <ng-content></ng-content>
+    </div>
+    <hr>
+    <div class="buttons">
+      <div class="btn-group">
+        <button [class]="okButtonClass" (click)="okButtonClick()">{{okButtonText}}</button>
+        <button [class]="cancelButtonClass" (click)="cancelButtonClick()">{{cancelButtonText}}</button>
+      </div>
+    </div>
+  </div>
+</div>

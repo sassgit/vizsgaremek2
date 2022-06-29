@@ -1,0 +1,42 @@
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th scope="col" *ngFor="let item of columns">{{item.title}}</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list | slice:startSlice:endSlice" (click)="raiseRowClick(item)" >
+        <td *ngFor="let column of columns">
+          <ng-container *ngIf="!column.divButton">
+            {{ interpret(column.interpreter, item[column.key])}}
+          </ng-container>
+          <ng-container *ngIf="column.divButton">
+            <div class="btn-group">
+              <button
+                  *ngFor="let button of column.divButton"
+                  [class]="button.class"
+                  (click)="raiseButtonClick(button.id, item)"
+                >{{button.text}}</button>
+            </div>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<nav *ngIf="pageCount > 1" aria-label="Page navigation example">
+  <ul class="pagination mt-4">
+    <li class="page-item"><button [disabled]="page < 2" class="page-link" (click)="jumpToPage(1)">|&lt;&lt;</button></li>
+    <li class="page-item"><button [disabled]="page < 2" class="page-link"
+        (click)="jumpToPage(page - 1)">&lt;</button></li>
+    <li *ngFor="let pageObj of pageList" class="page-item"><button class="page-link"
+        [ngClass]="{'fw-bold': page === pageObj.page}" (click)="jumpToPage(pageObj.page)">{{ pageObj.text }}</button>
+    </li>
+    <li class="page-item"><button [disabled]="page >= pageCount" class="page-link"
+        (click)="jumpToPage(page + 1)">&gt;</button></li>
+    <li class="page-item"><button [disabled]="page >= pageCount" class="page-link"
+        (click)="jumpToPage(pageCount)">&gt;&gt;|</button></li>
+  </ul>
+</nav>

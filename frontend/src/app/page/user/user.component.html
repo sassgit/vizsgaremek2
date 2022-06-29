@@ -1,0 +1,72 @@
+<h2>Az adminisztrációs rendszer felhasználói</h2>
+<button class="btn btn-primary" (click)="createClick()" >Új felhasználó felvitele az adatbázisba</button>
+<ngx-data-table
+  *ngIf="list$ |async as list"
+  [list]="list"
+  [columns]="[
+    {
+      title: 'e-mail',
+      key: 'email'
+    },
+    {
+      title: 'Jogosultság',
+      key: 'role'
+    },
+    {
+      title: 'Műveletek',
+      key: '',
+      divButton: [
+      {
+        id: 'edit',
+        class: 'btn btn-primary',
+        text: 'Szerkesztés'
+      },
+      {
+        id: 'delete',
+        class: 'btn btn-danger',
+        text: 'Törlés'
+      }
+      ]
+    }
+  ]"
+  (onButtonClick)="tableButtonClick($event)"
+></ngx-data-table>
+<app-modal *ngIf="editObj  as user" [(visible)]="editVisible" (onOkButtonClick)="editOkButton(user)" >
+  <form >
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="email" >Email</label>
+      </div>
+      <input type="text" [(ngModel)]="user.email" name="email" id="email" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="role" >Jogosultság</label>
+      </div>
+      <input type="text" [(ngModel)]="user.role" name="role" id="role" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="password" >Jelszó</label>
+      </div>
+      <input type="password" [(ngModel)]="user.password" name="password" id="password" class="form-control" >
+    </div>
+  </form>
+</app-modal>
+
+
+<app-modal
+  [(visible)]="deleteConfirmVisible"
+  okButtonClass="btn btn-danger"
+  (onOkButtonClick)="deleteConfirmed(deleteObj)"
+  okButtonText="Törlés!"
+  [zIndex] = "12000"
+  innerWidth="50%"
+>
+<h2>Törlés megerősítése</h2>
+<hr>
+<h3>
+  Valóban törölni kívánja ezt a felhasználót az adatbázisból?
+</h3>
+<small>(Email: {{deleteObj.email}} )</small>
+</app-modal>

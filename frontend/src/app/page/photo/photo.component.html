@@ -1,0 +1,88 @@
+<h2>A Festményekről készült fotók</h2>
+<input
+  #fileUpload
+  type="file"
+  class="file-input"
+  (change)="onFileSelected($event)"
+>
+<button class="btn btn-primary" (click)="fileUpload.click()" >Új fotó feltöltése</button>
+<br>
+<a [href]="imagesUrl" target="_blank" >Fényképek könyvtára</a>
+<br>
+<ngx-data-table
+  *ngIf="list$ |async as list"
+  [list]="list"
+  [columns]="[
+    {
+      title: 'Tárolt fájlnév',
+      key: 'storedFileName'
+    },
+    {
+      title: 'Megjelenített szöveg (alt)',
+      key: 'alt'
+    },
+    {
+      title: 'Fájl méret',
+      key: 'fileSize',
+      interpreter: fileSizeKbMode
+    },
+    {
+      title: 'Műveletek',
+      key: '',
+      divButton: [
+      {
+        id: 'edit',
+        class: 'btn btn-primary',
+        text: 'Szerkesztés'
+      },
+      {
+        id: 'delete',
+        class: 'btn btn-danger',
+        text: 'Törlés'
+      }
+      ]
+    }
+  ]"
+  [interpreter]="interpreterBound"
+  (onButtonClick)="tableButtonClick($event)"
+></ngx-data-table>
+
+<app-modal *ngIf="editObj  as photo" [(visible)]="editVisible" (onOkButtonClick)="editOkButton(photo)" >
+  <form >
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="storeadFileName" >Tárolt fájlnév</label>
+      </div>
+      <input disabled type="text" [(ngModel)]="photo.storedFileName" name="storeadFileName" id="storeadFileName" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="alt" >Megjelenített szöveg </label>
+      </div>
+      <input type="text" [(ngModel)]="photo.alt" name="alt" id="alt" class="form-control" >
+    </div>
+    <div class="form-group">
+      <div class="d-flex justify-content-start mt-2">
+        <label for="fileSize" >Fájlméret</label>
+      </div>
+      <input disabled type="number" [value]="fileSizeKb(photo.fileSize)" name="fileSize" id="fileSize" class="form-control" >
+    </div>
+  </form>
+</app-modal>
+
+
+<app-modal
+  [(visible)]="deleteConfirmVisible"
+  okButtonClass="btn btn-danger"
+  (onOkButtonClick)="deleteConfirmed(deleteObj)"
+  okButtonText="Törlés!"
+  [zIndex] = "12000"
+  innerWidth="50%"
+>
+<h2>Törlés megerősítése</h2>
+<hr>
+<h3>
+  Valóban törölni kívánja ezt a festményfotót?
+</h3>
+<small>(Fájl: {{deleteObj.storedFileName}}, Megjelenített szöveg: {{deleteObj.alt}} )</small>
+</app-modal>

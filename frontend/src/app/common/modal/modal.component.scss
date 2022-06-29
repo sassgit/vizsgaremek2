@@ -1,0 +1,36 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0000;
+  .modal-inner {
+    padding: 2rem;
+    display: inline-block;
+    align-items: center;
+    text-align: center;
+    // width: 80%;
+    // height: 100%;
+    background-color: white;
+    border: 5px solid #0048;
+  }
+}
+
+.modal-visible {
+  background-color: #0004;
+  transition: background-color 10s;
+}
+
+.modal-hidden {
+  display: none;
+  background-color: #0000;
+}
+
+.hidden {
+  display: none;
+}
